@@ -11,6 +11,12 @@ Imports DevExpress.XtraGrid.Views.Base
 Imports DevExpress.XtraLayout
 Imports AcurSoft.XtraEditors
 Imports AcurSoft.XtraGrid.Views.Grid.Bookmarks
+Imports DevExpress.XtraGrid.Extension
+Imports DevExpress.XtraGrid.Views.Grid
+Imports DevExpress.XtraGrid.FilterEditor
+Imports DevExpress.XtraEditors.Frames
+Imports DevExpress.XtraGrid
+Imports DevExpress.XtraGrid.Columns
 
 Namespace AcurSoft.XtraGrid.Controls
 
@@ -29,6 +35,7 @@ Namespace AcurSoft.XtraGrid.Controls
         Public ReadOnly Property MainLayoutControl As LayoutControl
         'Public ReadOnly Property FindHelper As FindHelper
         Public ReadOnly Property ColsCheckedComboBoxEdit As CheckedComboBoxEdit
+        Private _ViewEx As GridViewEx
 
         Public Function GetCheckedColumns() As List(Of IDataColumnInfo)
             Return Me.ColsCheckedComboBoxEdit.Properties.Items.Where(Function(q) q.CheckState = CheckState.Checked).Select(Function(q) DirectCast(q.Tag, IDataColumnInfo)).ToList()
@@ -144,8 +151,65 @@ Namespace AcurSoft.XtraGrid.Controls
                 End Sub
             menu.Items.Add(miShowFooter)
 
+            If _ViewEx.OptionsMenu.ShowConditionalFormattingItem Then
+                Dim miShowConditionalFormattingMenuItem As New DXMenuItem("Manage Conditional Formatting Rules")
+                AddHandler miShowConditionalFormattingMenuItem.Click,
+                    Sub(s, a)
+                        _ViewEx.Columns(0).ShowFormatRulesManager()
+
+                    End Sub
+                menu.Items.Add(miShowConditionalFormattingMenuItem)
+                If Me.View.FormatRules.Count > 0 Then
+                    Dim miClearAllConditionalFormattingMenuItem As New DXMenuItem("Clear all Conditional Formatting Rules")
+                    AddHandler miClearAllConditionalFormattingMenuItem.Click,
+                        Sub(s, a)
+                            View.BeginUpdate()
+                            Try
+                                For i As Integer = View.FormatRules.Count - 1 To 0 Step -1
+                                    View.FormatRules.RemoveAt(i)
+                                Next i
+                            Finally
+                                View.EndUpdate()
+                            End Try
+                        End Sub
+                    menu.Items.Add(miClearAllConditionalFormattingMenuItem)
+
+                End If
+            End If
+
             Return menu
         End Function
+
+
+        'Public Sub ShowFormatRulesManager(ByVal gridColumn As GridColumn)
+        '    If gridColumn Is Nothing Then
+        '        Return
+        '    End If
+        '    Dim view = TryCast(gridColumn.View, GridView)
+        '    If view Is Nothing Then
+        '        Return
+        '    End If
+        '    Dim filterColumns = New ViewFilterColumnCollection(view)
+        '    Dim filterColumnDefault = GridCriteriaHelper.GetFilterColumnByGridColumn(filterColumns, gridColumn)
+        '    Dim nameColumns = New List(Of ColumnNameInfo)()
+        '    For Each item As GridColumn In view.Columns
+        '        nameColumns.Add(New ColumnNameInfo() With {
+        '            .Key = item.FieldName,
+        '            .Value = item.GetCaption(),
+        '            .Name = item.Name,
+        '            .Visible = item.Visible AndAlso item.OptionsColumn.ShowInCustomizationForm
+        '        })
+        '    Next item
+
+
+        '    Using manager As New ManagerRuleForm(Of GridFormatRule, GridColumn)(view.FormatRules, view.Columns, filterColumns, filterColumnDefault, gridColumn.FieldName, view.GridControl.MenuManager, nameColumns)
+        '        view.InitDialogFormProperties(manager)
+        '        manager.ShowDialog()
+        '    End Using
+        'End Sub
+
+
+
         Public Overridable Function CreateBookMarksMenu() As DXPopupMenu
             If Not _ViewEx.OptionsBehavior.BookmarksHelper.IsInitiated Then Return Nothing
             Dim bkms As GridViewBookmarks = _ViewEx.OptionsBehavior.BookmarksHelper
@@ -196,7 +260,6 @@ Namespace AcurSoft.XtraGrid.Controls
             Return menu
         End Function
 
-        Private _ViewEx As GridViewEx
         Public Sub New(ByVal view As GridViewEx, ByVal properties As Object)
             MyBase.New(view, properties)
             _ViewEx = view
