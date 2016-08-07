@@ -1,7 +1,6 @@
 ﻿Imports System.ComponentModel
 Imports AcurSoft.XtraGrid.Views.Grid.Bookmarks
 Imports AcurSoft.XtraGrid.Views.Grid.Extenders
-Imports AcurSoft.XtraGrid.Views.Grid.GridFlags
 Imports DevExpress.Utils.Serializing
 Imports DevExpress.XtraGrid.Views.Base
 Imports DevExpress.XtraGrid.Views.Grid

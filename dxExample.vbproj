@@ -52,6 +52,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="DevExpress.RichEdit.v16.1.Core, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.Sparkline.v16.1.Core, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.Utils.v16.1, Version=16.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a">
       <Private>True</Private>
     </Reference>
@@ -102,6 +103,9 @@
     <Import Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="00Draft\SummaryExpressionFunction.vb" />
+    <Compile Include="00Draft\SummaryExpressionCriteriaVisitor.vb" />
+    <Compile Include="00Draft\SumTop.vb" />
     <Compile Include="00ToChange\CriteriaNodeHelper.vb" />
     <Compile Include="00ToChange\Draft\CriteriaExPatcher.vb" />
     <Compile Include="00ToChange\FilterControlLabelInfoEx.vb" />

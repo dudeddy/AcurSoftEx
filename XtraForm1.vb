@@ -83,13 +83,14 @@ Public Class XtraForm1
         dt = New DataTable()
         dt.Columns.Add("ID", GetType(Integer))
         dt.Columns.Add("Info", GetType(String))
-        dt.Columns.Add("Value", GetType(Decimal))
+        dt.Columns.Add("v1", GetType(Decimal))
+        dt.Columns.Add("v2", GetType(Decimal))
         dt.Columns.Add("Date", GetType(Date))
         dt.Columns.Add("Type", GetType(String))
         dt.Columns.Add("g", GetType(Guid))
         dt.Columns.Add("ts", GetType(TimeSpan))
         For i As Integer = 0 To rows - 1
-            dt.Rows.Add(i, "Infà" & i, 3.37 * i, Date.Now.AddDays(i), "Typé " & i Mod 3, Guid.NewGuid, New TimeSpan(0, 5, 1, 36 + i, 0))
+            dt.Rows.Add(i, "Infà" & i, 3.37 * i, If(i Mod 2 = 0, i, i - 1) * 20.17, Date.Now.AddDays(i), "Typé " & i Mod 3, Guid.NewGuid, New TimeSpan(0, 5, 1, 36 + i, 0))
         Next i
         Return dt
     End Function
@@ -196,6 +197,29 @@ Public Class XtraForm1
     Private Sub SimpleButton5_Click(sender As Object, e As EventArgs) Handles SimpleButton5.Click
         filterRow = Not filterRow
         'Me.GridViewEx1.OptionsBehavior.BookmarksHelper. = filterRow
+    End Sub
+
+    Private Sub SimpleButton6_Click(sender As Object, e As EventArgs) Handles SimpleButton6.Click
+        Dim go As New AggregateOperand("this", Aggregate.Sum)
+        go.Condition = CriteriaOperator.Parse("id = 49")
+        go.AggregatedExpression = CriteriaOperator.Parse("v1 +v2")
+        'Dim cr As CriteriaOperator = CriteriaOperator.Parse("SumTop([V1]+1 ,10) + Sum([V1])")
+        'cr = SummaryExpressionCriteriaVisitor.Fix(cr, Me.GridViewEx1.DataController.Helper.DescriptorCollection)
+
+        ''Dim fnc As New SumTop(Me.GridViewEx1.DataController)
+        'Dim fnc As New SumTop(Me.GridViewEx1)
+        'Dim fncs As New List(Of ICustomFunctionOperator)
+        'fncs.Add(fnc)
+
+
+        'Dim ev2 As New DevExpress.Data.Filtering.Helpers.ExpressionEvaluator(
+        '    Me.GridViewEx1.DataController.Helper.DescriptorCollection,
+        '    cr,
+        '    fncs)
+
+        'Dim o = ev2.Evaluate(Me.GridViewEx1.DataController.Helper.List)
+        'Dim tt = Me.GridViewEx1.DataController
+        Dim zzzz = 0
     End Sub
     'Private Sub DateRangeFunctionsControl1_OnRangeCriteriaChanged(e As AcurSoft.Data.Filtering.DateRangeCriteria)
     '    Dim x = e

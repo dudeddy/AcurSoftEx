@@ -22,19 +22,22 @@ Partial Class XtraForm1
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
-        Dim RangeControlRange2 As DevExpress.XtraEditors.RangeControlRange = New DevExpress.XtraEditors.RangeControlRange()
+        Dim RangeControlRange1 As DevExpress.XtraEditors.RangeControlRange = New DevExpress.XtraEditors.RangeControlRange()
+        Dim LineSparklineView1 As DevExpress.Sparkline.LineSparklineView = New DevExpress.Sparkline.LineSparklineView()
         Me.RangeControl1 = New DevExpress.XtraEditors.RangeControl()
         Me.MonthEdit1 = New DevExpress.XtraScheduler.UI.MonthEdit()
         Me.GridControlEx1 = New AcurSoft.XtraGrid.GridControlEx()
         Me.GridViewEx1 = New AcurSoft.XtraGrid.Views.Grid.GridViewEx()
         Me.XtraTabControl1 = New DevExpress.XtraTab.XtraTabControl()
         Me.XtraTabPage1 = New DevExpress.XtraTab.XtraTabPage()
+        Me.SimpleButton6 = New DevExpress.XtraEditors.SimpleButton()
+        Me.SimpleButton5 = New DevExpress.XtraEditors.SimpleButton()
         Me.SimpleButton4 = New DevExpress.XtraEditors.SimpleButton()
         Me.SimpleButton3 = New DevExpress.XtraEditors.SimpleButton()
         Me.SimpleButton2 = New DevExpress.XtraEditors.SimpleButton()
         Me.SimpleButton1 = New DevExpress.XtraEditors.SimpleButton()
         Me.XtraTabPage2 = New DevExpress.XtraTab.XtraTabPage()
-        Me.SimpleButton5 = New DevExpress.XtraEditors.SimpleButton()
+        Me.SparklineEdit1 = New DevExpress.XtraEditors.SparklineEdit()
         CType(Me.RangeControl1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.MonthEdit1.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridControlEx1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -42,6 +45,7 @@ Partial Class XtraForm1
         CType(Me.XtraTabControl1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.XtraTabControl1.SuspendLayout()
         Me.XtraTabPage1.SuspendLayout()
+        CType(Me.SparklineEdit1.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'RangeControl1
@@ -49,10 +53,10 @@ Partial Class XtraForm1
         Me.RangeControl1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.RangeControl1.Location = New System.Drawing.Point(0, 0)
         Me.RangeControl1.Name = "RangeControl1"
-        RangeControlRange2.Maximum = New Date(2016, 6, 5, 0, 0, 0, 0)
-        RangeControlRange2.Minimum = New Date(2016, 5, 27, 0, 0, 0, 0)
-        RangeControlRange2.Owner = Me.RangeControl1
-        Me.RangeControl1.SelectedRange = RangeControlRange2
+        RangeControlRange1.Maximum = New Date(2016, 6, 5, 0, 0, 0, 0)
+        RangeControlRange1.Minimum = New Date(2016, 5, 27, 0, 0, 0, 0)
+        RangeControlRange1.Owner = Me.RangeControl1
+        Me.RangeControl1.SelectedRange = RangeControlRange1
         Me.RangeControl1.Size = New System.Drawing.Size(889, 91)
         Me.RangeControl1.TabIndex = 0
         Me.RangeControl1.Text = "RangeControl1"
@@ -93,6 +97,8 @@ Partial Class XtraForm1
         '
         'XtraTabPage1
         '
+        Me.XtraTabPage1.Controls.Add(Me.SparklineEdit1)
+        Me.XtraTabPage1.Controls.Add(Me.SimpleButton6)
         Me.XtraTabPage1.Controls.Add(Me.SimpleButton5)
         Me.XtraTabPage1.Controls.Add(Me.SimpleButton4)
         Me.XtraTabPage1.Controls.Add(Me.SimpleButton3)
@@ -102,6 +108,22 @@ Partial Class XtraForm1
         Me.XtraTabPage1.Name = "XtraTabPage1"
         Me.XtraTabPage1.Size = New System.Drawing.Size(889, 91)
         Me.XtraTabPage1.Text = "XtraTabPage1"
+        '
+        'SimpleButton6
+        '
+        Me.SimpleButton6.Location = New System.Drawing.Point(700, 48)
+        Me.SimpleButton6.Name = "SimpleButton6"
+        Me.SimpleButton6.Size = New System.Drawing.Size(75, 23)
+        Me.SimpleButton6.TabIndex = 6
+        Me.SimpleButton6.Text = "SimpleButton6"
+        '
+        'SimpleButton5
+        '
+        Me.SimpleButton5.Location = New System.Drawing.Point(700, 19)
+        Me.SimpleButton5.Name = "SimpleButton5"
+        Me.SimpleButton5.Size = New System.Drawing.Size(75, 23)
+        Me.SimpleButton5.TabIndex = 5
+        Me.SimpleButton5.Text = "SimpleButton5"
         '
         'SimpleButton4
         '
@@ -141,13 +163,13 @@ Partial Class XtraForm1
         Me.XtraTabPage2.Size = New System.Drawing.Size(889, 91)
         Me.XtraTabPage2.Text = "XtraTabPage2"
         '
-        'SimpleButton5
+        'SparklineEdit1
         '
-        Me.SimpleButton5.Location = New System.Drawing.Point(700, 19)
-        Me.SimpleButton5.Name = "SimpleButton5"
-        Me.SimpleButton5.Size = New System.Drawing.Size(75, 23)
-        Me.SimpleButton5.TabIndex = 5
-        Me.SimpleButton5.Text = "SimpleButton5"
+        Me.SparklineEdit1.Location = New System.Drawing.Point(201, 19)
+        Me.SparklineEdit1.Name = "SparklineEdit1"
+        Me.SparklineEdit1.Properties.View = LineSparklineView1
+        Me.SparklineEdit1.Size = New System.Drawing.Size(191, 33)
+        Me.SparklineEdit1.TabIndex = 9
         '
         'XtraForm1
         '
@@ -167,6 +189,7 @@ Partial Class XtraForm1
         CType(Me.XtraTabControl1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.XtraTabControl1.ResumeLayout(False)
         Me.XtraTabPage1.ResumeLayout(False)
+        CType(Me.SparklineEdit1.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 
     End Sub
@@ -183,4 +206,6 @@ Partial Class XtraForm1
     Friend WithEvents SimpleButton3 As DevExpress.XtraEditors.SimpleButton
     Friend WithEvents SimpleButton4 As DevExpress.XtraEditors.SimpleButton
     Friend WithEvents SimpleButton5 As DevExpress.XtraEditors.SimpleButton
+    Friend WithEvents SimpleButton6 As DevExpress.XtraEditors.SimpleButton
+    Friend WithEvents SparklineEdit1 As DevExpress.XtraEditors.SparklineEdit
 End Class

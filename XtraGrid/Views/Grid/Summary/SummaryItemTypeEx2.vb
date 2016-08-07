@@ -54,6 +54,7 @@ Namespace AcurSoft.XtraGrid.Views.Grid.Extenders
         Min = SummaryItemType.Min
         Max = SummaryItemType.Max
         UniqueValuesCount = SummaryItemTypeHelperEx.Custom Or 1 << 201
+        Expression = SummaryItemTypeHelperEx.Custom Or 1 << 202
         TopXSum = SummaryItemTypeHelperEx.Custom Or SummaryItemTypeHelperEx.Top Or SummaryItemTypeHelperEx.Sum
         TopXAvg = SummaryItemTypeHelperEx.Custom Or SummaryItemTypeHelperEx.Top Or SummaryItemTypeHelperEx.Avg
         BottomXSum = SummaryItemTypeHelperEx.Custom Or SummaryItemTypeHelperEx.Buttom Or SummaryItemTypeHelperEx.Sum

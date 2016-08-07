@@ -181,35 +181,6 @@ Namespace AcurSoft.XtraGrid.Controls
         End Function
 
 
-        'Public Sub ShowFormatRulesManager(ByVal gridColumn As GridColumn)
-        '    If gridColumn Is Nothing Then
-        '        Return
-        '    End If
-        '    Dim view = TryCast(gridColumn.View, GridView)
-        '    If view Is Nothing Then
-        '        Return
-        '    End If
-        '    Dim filterColumns = New ViewFilterColumnCollection(view)
-        '    Dim filterColumnDefault = GridCriteriaHelper.GetFilterColumnByGridColumn(filterColumns, gridColumn)
-        '    Dim nameColumns = New List(Of ColumnNameInfo)()
-        '    For Each item As GridColumn In view.Columns
-        '        nameColumns.Add(New ColumnNameInfo() With {
-        '            .Key = item.FieldName,
-        '            .Value = item.GetCaption(),
-        '            .Name = item.Name,
-        '            .Visible = item.Visible AndAlso item.OptionsColumn.ShowInCustomizationForm
-        '        })
-        '    Next item
-
-
-        '    Using manager As New ManagerRuleForm(Of GridFormatRule, GridColumn)(view.FormatRules, view.Columns, filterColumns, filterColumnDefault, gridColumn.FieldName, view.GridControl.MenuManager, nameColumns)
-        '        view.InitDialogFormProperties(manager)
-        '        manager.ShowDialog()
-        '    End Using
-        'End Sub
-
-
-
         Public Overridable Function CreateBookMarksMenu() As DXPopupMenu
             If Not _ViewEx.OptionsBehavior.BookmarksHelper.IsInitiated Then Return Nothing
             Dim bkms As GridViewBookmarks = _ViewEx.OptionsBehavior.BookmarksHelper
@@ -402,9 +373,6 @@ Namespace AcurSoft.XtraGrid.Controls
                     Dim menu As DXPopupMenu = Me.CreateBookMarksMenu
                     If menu IsNot Nothing Then
                         editor.ShowMenu(e.Button, menu)
-                        'DevExpress.Utils.Menu.MenuManagerHelper.ShowMenu(menu, editor.LookAndFeel, Nothing, editor, New Point(bvi.Bounds.Left, bvi.Bounds.Bottom))
-                        'menu.Show(editor, New Point(bvi.Bounds.Left, bvi.Bounds.Bottom))
-
                     End If
                 Case "Filter"
                     Dim h As GridViewBookmarks = _ViewEx.OptionsBehavior.BookmarksHelper
@@ -432,7 +400,7 @@ Namespace AcurSoft.XtraGrid.Controls
 
 
         Private Sub ColsCheckedComboBoxEdit_EditValueChanged(sender As Object, e As EventArgs)
-            _ViewEx.OptionsFind.FindFilterColumns = ColsCheckedComboBoxEdit.Text '.Replace(", ", ";").Replace(" ", "")
+            _ViewEx.OptionsFind.FindFilterColumns = ColsCheckedComboBoxEdit.Text
             If Not String.IsNullOrEmpty(Me.SearchEditor.Text) Then
                 Dim findText As String = Me.SearchEditor.Text
                 _ViewEx.ApplyFindFilter("")

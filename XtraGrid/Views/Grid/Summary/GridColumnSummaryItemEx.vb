@@ -183,7 +183,9 @@ Namespace AcurSoft.XtraGrid
 
         Public Shared Function FixSummaryInfo(st As SummaryItemTypeEx2, Optional info As Object = Nothing) As Object
             If info Is Nothing Then
-                If SummaryItemTypeHelperEx.IsPercent(st) Then
+                If st = SummaryItemTypeEx2.Expression Then
+                    info = "Count()"
+                ElseIf SummaryItemTypeHelperEx.IsPercent(st) Then
                     info = 50
                 ElseIf SummaryItemTypeHelperEx.IsTopButtom(st)
                     info = 5
@@ -208,7 +210,9 @@ Namespace AcurSoft.XtraGrid
         End Property
 
         Public Function FixSummaryInfo() As Object
-            If SummaryItemTypeHelperEx.IsPercent(Me.SummaryTypeEx) Then
+            If Me.SummaryTypeEx = SummaryItemTypeEx2.Expression Then
+                Return "Sum([" & Me.FieldName & "])"
+            ElseIf SummaryItemTypeHelperEx.IsPercent(Me.SummaryTypeEx) Then
                 Return 50
             ElseIf SummaryItemTypeHelperEx.IsTopButtom(Me.SummaryTypeEx)
                 Return 5

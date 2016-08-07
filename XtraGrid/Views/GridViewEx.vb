@@ -40,27 +40,24 @@ Namespace AcurSoft.XtraGrid.Views.Grid
         Public Const VIEW_NAME As String = "GridViewEx"
 
 
+        Public Event CustomFilterPanelButtonClick As EventHandler
         Private _FilterPanelButtonsStore As Dictionary(Of EditorButton, EditorButtonObjectInfoArgs)
-
-
-
         Private _NeedColumnRecalc As Boolean = False
         Private _OptionsFind As GridViewOptionsFindEx
 
+#Region "Constructors"
         Public Sub New()
             MyBase.New()
             RemoveHandler Me.ColumnPositionChanged, AddressOf OnColumnPositionChanged
             AddHandler Me.ColumnPositionChanged, AddressOf OnColumnPositionChanged
-            'FilterPanelButtonsStore = New Dictionary(Of EditorButton, EditorButtonObjectInfoArgs)()
         End Sub
-
-        'Overrides bes
 
         Public Sub New(ByVal grid As GridControl)
             MyBase.New(grid)
         End Sub
+#End Region
 
-        Public Event CustomFilterPanelButtonClick As EventHandler
+#Region "Columns"
 
         Private Sub OnColumnPositionChanged(sender As Object, e As EventArgs)
             If Not Me.OptionsView.FillEmptySpace Then Return
@@ -70,6 +67,11 @@ Namespace AcurSoft.XtraGrid.Views.Grid
                 lastCol.FillEmptySpace = True
             End If
         End Sub
+
+        Protected Overrides Function CreateColumnCollection() As GridColumnCollection
+            Return New GridExColumnCollection(Me)
+        End Function
+#End Region
 
         Protected Overrides Function ConvertGridFilterToDataFilter(ByVal criteria As CriteriaOperator) As CriteriaOperator
             If Not String.IsNullOrEmpty(FindFilterText) Then
@@ -84,9 +86,6 @@ Namespace AcurSoft.XtraGrid.Views.Grid
             Return MyBase.ConvertGridFilterToDataFilter(criteria)
         End Function
 
-        Protected Overrides Function CreateColumnCollection() As GridColumnCollection
-            Return New GridExColumnCollection(Me)
-        End Function
 
         Protected Overrides Function CreateDateFilterPopup(ByVal column As GridColumn, ByVal ownerControl As System.Windows.Forms.Control, ByVal creator As Object) As DateFilterPopup
             Return New DateFilterPopupEx(Me, column, ownerControl, creator)
@@ -94,7 +93,6 @@ Namespace AcurSoft.XtraGrid.Views.Grid
         Protected Overrides Function CreateFindPanel(ByVal findPanelProperties As Object) As DevExpress.XtraGrid.Controls.FindControl
             _FindControl = New FindControlEx(Me, findPanelProperties)
             Me.RequestXtraPanelControl()
-
             Return FindControl
         End Function
 
@@ -105,12 +103,6 @@ Namespace AcurSoft.XtraGrid.Views.Grid
             _OptionsFind = New GridViewOptionsFindEx(Me)
             Return _OptionsFind
         End Function
-
-        Protected Overrides Sub OnDataManager_CustomSummaryEvent(sender As Object, e As CustomSummaryEventArgs)
-            MyBase.OnDataManager_CustomSummaryEvent(sender, e)
-            Extenders.CustomSummaryHelper.GetUniqueValuesCount(Me, e)
-            Extenders.CustomSummaryHelper.GetTopBottomSummary(Me, e)
-        End Sub
 
         Protected Overrides Sub OnFilterPopupValuesReady(column As GridColumn, values() As Object)
             MyBase.OnFilterPopupValuesReady(column, values)
@@ -132,9 +124,6 @@ Namespace AcurSoft.XtraGrid.Views.Grid
             list.Add(New FilterDateElement(Localizer.Active.GetLocalizedString(StringId.FilterClauseBetween), String.Empty, filter))
             MyBase.RaiseFilterPopupDate(filterPopup, list)
         End Sub
-
-        'Overrides summar
-
 
         Protected Overrides Sub RaisePopupMenuShowing(e As PopupMenuShowingEventArgs)
             MyBase.RaisePopupMenuShowing(e)
@@ -171,9 +160,16 @@ Namespace AcurSoft.XtraGrid.Views.Grid
                         e.Menu.Items.Add(miClear)
                     End If
                 End If
-
-
             End If
+        End Sub
+
+#Region "Summaries"
+
+        Protected Overrides Sub OnDataManager_CustomSummaryEvent(sender As Object, e As CustomSummaryEventArgs)
+            MyBase.OnDataManager_CustomSummaryEvent(sender, e)
+            Extenders.CustomSummaryHelper.GetUniqueValuesCount(Me, e)
+            Extenders.CustomSummaryHelper.GetTopBottomSummary(Me, e)
+            Extenders.CustomSummaryHelper.GetExpressionSummary(Me, e)
         End Sub
 
         Private Sub BuildSummariesMenuItems(col As GridColumn, orgSummaryItem As GridColumnSummaryItem, msiSummariesItems As DXMenuItemCollection, add As Boolean, Optional beginGroup As Boolean = False)
@@ -196,6 +192,7 @@ Namespace AcurSoft.XtraGrid.Views.Grid
             msiBottom.Items.Add(CreateSummaryColumnMenuItem(SummaryItemTypeEx2.BottomXPercentSum, col, orgSummaryItem,, add))
             msiBottom.Items.Add(CreateSummaryColumnMenuItem(SummaryItemTypeEx2.BottomXPercentAvg, col, orgSummaryItem,, add))
             msiSummariesItems.Add(msiBottom)
+            msiSummariesItems.Add(CreateSummaryColumnMenuItem(SummaryItemTypeEx2.Expression, col, orgSummaryItem, True, add))
         End Sub
 
         Private Function GetSummaryEditDialogMenuItem(e As PopupMenuShowingEventArgs) As DXMenuItem
@@ -236,6 +233,60 @@ Namespace AcurSoft.XtraGrid.Views.Grid
 
             Return miSummaryConfigDialog
         End Function
+        Public Function CreateSummaryColumnMenuItem(st As SummaryItemTypeEx2, col As GridColumn, orgSummaryItem As GridColumnSummaryItem, Optional beginGroup As Boolean = False, Optional add As Boolean = False) As DXMenuCheckItem
+            Dim mi As New DXMenuCheckItem() With {
+                    .Caption = CustomSummaryHelper.GetSummaryTypeCaption(st, col),
+                    .BeginGroup = beginGroup,
+                    .Enabled = CustomSummaryHelper.CanApplySummary(st, col)
+            }
+            If Not add AndAlso st <> SummaryItemTypeEx2.None Then
+                If orgSummaryItem Is Nothing Then
+                    mi.Checked = DirectCast(col.SummaryItem, GridColumnSummaryItemEx).SummaryTypeEx = st
+                Else
+                    mi.Checked = DirectCast(orgSummaryItem, GridColumnSummaryItemEx).SummaryTypeEx = st
+                End If
+            End If
+
+            AddHandler mi.CheckedChanged,
+                    Sub(s, a)
+                        If mi.Checked Then
+                            Dim gv As GridView = DirectCast(col.View, GridView)
+                            Dim c As GridColumn = gv.Columns(col.FieldName)
+                            gv.BeginDataUpdate()
+                            col.Summary.BeginUpdate()
+                            Dim newSi As GridColumnSummaryItemEx = Nothing
+                            If add Then
+                                newSi = GridColumnSummaryItemEx.CreateInstance(col, st, col.FieldName, Nothing, Nothing, False, True)
+                            Else
+                                If orgSummaryItem Is Nothing Then
+                                    newSi = GridColumnSummaryItemEx.CreateInstance(col, st, col.FieldName, Nothing, Nothing, True, True)
+                                Else
+                                    If st = SummaryItemTypeEx2.None AndAlso orgSummaryItem IsNot Nothing AndAlso orgSummaryItem.Collection.Count > 1 Then
+                                        orgSummaryItem.Collection.Remove(orgSummaryItem)
+                                    Else
+                                        Dim gsi As New GridColumnSummaryItemEx(gv, st, col.FieldName, Nothing, Nothing)
+                                        If gsi.SummaryType <> SummaryItemType.None Then
+                                            gv.OptionsView.ShowFooter = True
+                                        End If
+                                        orgSummaryItem.Assign(gsi)
+                                    End If
+                                End If
+                            End If
+                            col.Summary.EndUpdate()
+                            gv.EndDataUpdate()
+                            If st = SummaryItemTypeEx2.Expression AndAlso newSi IsNot Nothing Then
+                                Using frm As New Extenders.ColumnSummaryConfig(col, DirectCast(newSi, GridColumnSummaryItemEx))
+                                    If frm.ShowDialog = DialogResult.OK Then
+                                        frm.SaveChanges()
+                                    End If
+                                End Using
+
+                            End If
+                        End If
+                    End Sub
+            Return mi
+        End Function
+#End Region
 
         Protected Overridable Sub RecalculateColumnWidths()
             If Me.IsLoading Then Return
@@ -277,6 +328,7 @@ Namespace AcurSoft.XtraGrid.Views.Grid
             Next button
             Return offset
         End Function
+
         Friend Sub UpdateFilterPanelButtonState(ByVal state As ObjectState, ByVal point As Point)
             Dim hitInfo As GridHitInfo = CalcHitInfo(point)
             If hitInfo.HitTest <> GridHitTest.FilterPanel Then
@@ -298,55 +350,9 @@ Namespace AcurSoft.XtraGrid.Views.Grid
             Me.OnColumnSummaryCollectionChanged(column, e)
         End Sub
 
-
-
         Public Sub AddFilterPanelButton(ByVal b As EditorButton)
             FilterPanelButtonsStore.Add(b, New EditorButtonObjectInfoArgs(b, New DevExpress.Utils.AppearanceObject()))
         End Sub
-        Public Function CreateSummaryColumnMenuItem(st As SummaryItemTypeEx2, col As GridColumn, orgSummaryItem As GridColumnSummaryItem, Optional beginGroup As Boolean = False, Optional add As Boolean = False) As DXMenuCheckItem
-            Dim mi As New DXMenuCheckItem() With {
-                    .Caption = CustomSummaryHelper.GetSummaryTypeCaption(st, col),
-                    .BeginGroup = beginGroup,
-                    .Enabled = CustomSummaryHelper.CanApplySummary(st, col)
-            }
-            If Not add AndAlso st <> SummaryItemTypeEx2.None Then
-                If orgSummaryItem Is Nothing Then
-                    mi.Checked = DirectCast(col.SummaryItem, GridColumnSummaryItemEx).SummaryTypeEx = st
-                Else
-                    mi.Checked = DirectCast(orgSummaryItem, GridColumnSummaryItemEx).SummaryTypeEx = st
-                End If
-            End If
-
-            AddHandler mi.CheckedChanged,
-                    Sub(s, a)
-                        If mi.Checked Then
-                            Dim gv As GridView = DirectCast(col.View, GridView)
-                            Dim c As GridColumn = gv.Columns(col.FieldName)
-                            gv.BeginDataUpdate()
-                            col.Summary.BeginUpdate()
-                            If add Then
-                                GridColumnSummaryItemEx.CreateInstance(col, st, col.FieldName, Nothing, Nothing, False, True)
-                            Else
-                                If orgSummaryItem Is Nothing Then
-                                    GridColumnSummaryItemEx.CreateInstance(col, st, col.FieldName, Nothing, Nothing, True, True)
-                                Else
-                                    If st = SummaryItemTypeEx2.None AndAlso orgSummaryItem IsNot Nothing AndAlso orgSummaryItem.Collection.Count > 1 Then
-                                        orgSummaryItem.Collection.Remove(orgSummaryItem)
-                                    Else
-                                        Dim gsi As New GridColumnSummaryItemEx(gv, st, col.FieldName, Nothing, Nothing)
-                                        If gsi.SummaryType <> SummaryItemType.None Then
-                                            gv.OptionsView.ShowFooter = True
-                                        End If
-                                        orgSummaryItem.Assign(gsi)
-                                    End If
-                                End If
-                            End If
-                            col.Summary.EndUpdate()
-                            gv.EndDataUpdate()
-                        End If
-                    End Sub
-            Return mi
-        End Function
 
         Public Function GetCheckedColumns(Optional checked As Boolean = True) As IEnumerable(Of GridExColumn)
             Return Me.Columns.OfType(Of GridExColumn).Where(Function(q) q.CheckedStateRepository.Checked = checked)
@@ -407,6 +413,7 @@ Namespace AcurSoft.XtraGrid.Views.Grid
                 Return TryCast(MyBase.Columns, GridExColumnCollection)
             End Get
         End Property
+
         Public ReadOnly Property FilterPanelButtonsStore As Dictionary(Of EditorButton, EditorButtonObjectInfoArgs)
             Get
                 If _FilterPanelButtonsStore Is Nothing Then

@@ -1,5 +1,6 @@
 ﻿Imports AcurSoft.Data
 Imports DevExpress.Data
+Imports DevExpress.Data.Filtering
 Imports DevExpress.XtraGrid
 Imports DevExpress.XtraGrid.Columns
 Imports DevExpress.XtraGrid.Views.Grid
@@ -30,6 +31,7 @@ Namespace AcurSoft.XtraGrid.Views.Grid.Extenders
                     _SummaryTypeDic.Add(SummaryItemTypeEx2.TopXPercentAvg, "Top X Percent Avg")
                     _SummaryTypeDic.Add(SummaryItemTypeEx2.BottomXAvg, "Bottom X Avg")
                     _SummaryTypeDic.Add(SummaryItemTypeEx2.BottomXPercentAvg, "Bottom X Percent Avg")
+                    _SummaryTypeDic.Add(SummaryItemTypeEx2.Expression, "Expression")
 
                 End If
                 Return _SummaryTypeDic
@@ -98,6 +100,46 @@ Namespace AcurSoft.XtraGrid.Views.Grid.Extenders
 
 #End Region
 
+#Region "Expression Summary"
+        Public Shared Function GetExpressionSummaryTotal(gsi As GridColumnSummaryItemEx) As Object
+            Dim gv As GridView = gsi.View
+            Dim expression As String = Convert.ToString(gsi.Info)
+            'Dim cr As CriteriaOperator = CriteriaOperator.Parse("SumTop([V1]+1 ,10) + Sum([V1])")
+            Dim cr As CriteriaOperator = SummaryExpressionCriteriaVisitor.Fix(CriteriaOperator.Parse(expression), gsi.View.DataController.Helper.DescriptorCollection)
+
+            Dim customFunctions As List(Of ICustomFunctionOperator) = SummaryExpressionFunction.GetExpressionFunctions(gsi.View.DataController)
+
+            Dim ev As New DevExpress.Data.Filtering.Helpers.ExpressionEvaluator(gsi.View.DataController.Helper.DescriptorCollection, cr, False, customFunctions)
+
+            Return ev.Evaluate(gsi.View.DataController.Helper.List)
+        End Function
+
+        Public Shared Sub GetExpressionSummary(ByVal view As GridView, ByVal e As CustomSummaryEventArgs)
+            Dim summaryItem As GridColumnSummaryItemEx = TryCast(e.Item, GridColumnSummaryItemEx)
+            If Not e.IsTotalSummary OrElse Not summaryItem.SummaryTypeEx = SummaryItemTypeEx2.Expression Then Return
+            Select Case e.SummaryProcess
+                Case DevExpress.Data.CustomSummaryProcess.Start
+                    If e.RowHandle = 0 Then
+                        e.TotalValue = 0
+                    End If
+                Case DevExpress.Data.CustomSummaryProcess.Calculate
+                    'TagValue = TagValue
+                Case DevExpress.Data.CustomSummaryProcess.Finalize
+                    If e.RowHandle > 0 And e.IsTotalSummary Then
+                        If view.RowCount = 0 Then
+                            e.TotalValue = 0
+                        Else
+                            Try
+                                e.TotalValue = GetExpressionSummaryTotal(summaryItem)
+                            Catch ex As Exception
+                            End Try
+                        End If
+                    End If
+            End Select
+        End Sub
+
+#End Region
+
 #Region "TopBottom"
         Public Shared Function GetTopBottomSummaryTotal(gsi As GridColumnSummaryItemEx) As Object
             Dim lst As IEnumerable(Of Object) = Nothing
@@ -113,22 +155,20 @@ Namespace AcurSoft.XtraGrid.Views.Grid.Extenders
                 x = 1
             End If
             If SummaryItemTypeHelperEx.IsTop(st) Then
-                lst = From row In Enumerable.Range(0, cnt) Select q = gv.GetRowCellValue(row, fieldName) Order By q Descending
+                lst = From row In Enumerable.Range(0, cnt) Select q = gv.GetRowCellValue(row, fieldName) Order By q Descending Take x
             ElseIf SummaryItemTypeHelperEx.IsButtom(st)
-                lst = From row In Enumerable.Range(0, cnt) Select q = gv.GetRowCellValue(row, fieldName) Order By q Ascending
+                lst = From row In Enumerable.Range(0, cnt) Select q = gv.GetRowCellValue(row, fieldName) Order By q Ascending Take x
             End If
             If SummaryItemTypeHelperEx.IsSum(st) Then
                 If gv.Columns(fieldName).ColumnType Is GetType(TimeSpan) Then
-                    Return TimeSpan.FromSeconds(lst.Take(x).Sum(Function(s) DirectCast(s, TimeSpan).TotalSeconds))
-
+                    Return TimeSpan.FromSeconds(lst.Sum(Function(s) DirectCast(s, TimeSpan).TotalSeconds))
                 End If
-                Return lst.Take(x).Sum(Function(s) Convert.ToDecimal(s))
+                Return lst.Sum(Function(s) Convert.ToDecimal(s))
             ElseIf SummaryItemTypeHelperEx.IsAvg(st) Then
                 If gv.Columns(fieldName).ColumnType Is GetType(TimeSpan) Then
-                    Return TimeSpan.FromSeconds(lst.Take(x).Average(Function(s) DirectCast(s, TimeSpan).TotalSeconds))
-
+                    Return TimeSpan.FromSeconds(lst.Average(Function(s) DirectCast(s, TimeSpan).TotalSeconds))
                 End If
-                Return lst.Take(x).Average(Function(s) Convert.ToDecimal(s))
+                Return lst.Average(Function(s) Convert.ToDecimal(s))
             End If
             Return Nothing
         End Function
@@ -187,6 +227,8 @@ Namespace AcurSoft.XtraGrid.Views.Grid.Extenders
             Dim caption As String = Nothing
             info = GridColumnSummaryItemEx.FixSummaryInfo(st, info)
             Select Case st
+                Case SummaryItemTypeEx2.Expression
+                    caption = "Expression"
                 Case SummaryItemTypeEx2.Average
                     caption = "Average"
                 Case SummaryItemTypeEx2.Count
