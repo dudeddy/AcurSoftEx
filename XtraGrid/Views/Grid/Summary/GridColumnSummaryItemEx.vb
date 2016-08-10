@@ -13,7 +13,7 @@ Namespace AcurSoft.XtraGrid
         Inherits GridColumnSummaryItem
         Private _SummaryTypeEx As SummaryItemTypeEx2
         <XtraSerializableProperty, XtraSerializablePropertyId(2)>
-        Public Property SummaryTypeEx As SummaryItemTypeEx2
+        Public Overridable Property SummaryTypeEx As SummaryItemTypeEx2
             Get
                 Return _SummaryTypeEx
             End Get
@@ -119,14 +119,15 @@ Namespace AcurSoft.XtraGrid
         Public Sub New(view As GridView, summaryTypeEx As SummaryItemTypeEx2, fieldName As String, Optional displayFormat As String = Nothing, Optional info As Object = Nothing)
             MyBase.New(If(summaryTypeEx.value__ < 100, DirectCast(summaryTypeEx.value__, SummaryItemType), SummaryItemType.Custom), fieldName, displayFormat)
             _SummaryTypeEx = summaryTypeEx
-            'Me.FixSummaryTypeEx(SummaryType)
-            If String.IsNullOrEmpty(displayFormat) Then
-                displayFormat = CustomSummaryHelper.GetSummaryTypeDisplayFormat(summaryTypeEx, view.Columns(fieldName))
-            End If
-            Me.DisplayFormat = displayFormat
-            Me.FixFormat()
-            If info Is Nothing Then
-                Me.Info = Me.FixSummaryInfo()
+            If summaryTypeEx <> SummaryItemTypeEx2.Sparkline Then
+                If String.IsNullOrEmpty(displayFormat) Then
+                    displayFormat = CustomSummaryHelper.GetSummaryTypeDisplayFormat(summaryTypeEx, view.Columns(fieldName))
+                End If
+                Me.DisplayFormat = displayFormat
+                Me.FixFormat()
+                If info Is Nothing Then
+                    Me.Info = Me.FixSummaryInfo()
+                End If
             End If
         End Sub
 
@@ -180,16 +181,25 @@ Namespace AcurSoft.XtraGrid
             'Me.Column.View.c
             Return SummaryItemType.Custom
         End Function
-
-        Public Shared Function FixSummaryInfo(st As SummaryItemTypeEx2, Optional info As Object = Nothing) As Object
+        Public Shared Function FixSummaryInfoEx(st As SummaryItemTypeEx2, Optional info As Object = Nothing) As Object
             If info Is Nothing Then
                 If st = SummaryItemTypeEx2.Expression Then
                     info = "Count()"
+                ElseIf st = SummaryItemTypeEx2.Sparkline Then
+                    info = New GridColumnSummaryItemExSparklineInfos()
                 ElseIf SummaryItemTypeHelperEx.IsPercent(st) Then
                     info = 50
                 ElseIf SummaryItemTypeHelperEx.IsTopButtom(st)
                     info = 5
                 End If
+            End If
+            Return info
+        End Function
+
+        Public Function FixSummaryInfo(st As SummaryItemTypeEx2, Optional info As Object = Nothing) As Object
+            info = FixSummaryInfoEx(st, info)
+            If Me.SummaryTypeEx = SummaryItemTypeEx2.Sparkline Then
+                DirectCast(info, GridColumnSummaryItemExSparklineInfos).SetSummary(Me)
             End If
             Return info
         End Function
@@ -212,6 +222,8 @@ Namespace AcurSoft.XtraGrid
         Public Function FixSummaryInfo() As Object
             If Me.SummaryTypeEx = SummaryItemTypeEx2.Expression Then
                 Return "Sum([" & Me.FieldName & "])"
+            ElseIf Me.SummaryTypeEx = SummaryItemTypeEx2.Sparkline Then
+                Return New GridColumnSummaryItemExSparklineInfos(Me)
             ElseIf SummaryItemTypeHelperEx.IsPercent(Me.SummaryTypeEx) Then
                 Return 50
             ElseIf SummaryItemTypeHelperEx.IsTopButtom(Me.SummaryTypeEx)

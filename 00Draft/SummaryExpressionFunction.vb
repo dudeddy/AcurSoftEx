@@ -73,6 +73,8 @@ Public Class SummaryExpressionFunction
                 Return "ValueAt"
             ElseIf Me.IsDistinct AndAlso Me.AggregateType = AggregateTypeEnum.Count Then
                 Return "DistinctCount"
+            ElseIf Not Me.IsDistinct AndAlso Me.AggregateType = AggregateTypeEnum.Count Then
+                Return If(Me.IsTop, "CountTop", "CountBottom")
             ElseIf Me.IsDistinct AndAlso Me.AggregateType = AggregateTypeEnum.Sum Then
                 Return "DistinctSum"
             ElseIf Me.IsDistinct AndAlso Me.AggregateType = AggregateTypeEnum.Avg Then
@@ -133,6 +135,13 @@ Public Class SummaryExpressionFunction
             End If
         Else
             x = Convert.ToDecimal(operands(1))
+            'If Me.AggregateType = AggregateTypeEnum.Count Then
+            '    isPercent = True
+            '    If operands.Count > 2 Then
+            '        timePrecision = GetTimePrecision(operands(2))
+            '    End If
+
+            'Else
             If operands.Count > 2 AndAlso operands(2) IsNot Nothing Then
                 If TypeOf operands(2) Is Boolean Then
                     isPercent = Convert.ToBoolean(operands(2))
@@ -145,6 +154,7 @@ Public Class SummaryExpressionFunction
             End If
 
         End If
+        'End If
 
         Dim isTop As Boolean = Me.IsTop
         If Me.IsRank OrElse Me.IsDistinct Then
@@ -158,6 +168,9 @@ Public Class SummaryExpressionFunction
         If Me.IsRank Then
             Return GetRank(Me.DataController, expression, isTop, x, isPercent, timePrecision)
         Else
+            'If Me.AggregateType = AggregateTypeEnum.Count Then
+            '    Return GetCountTopBotton(Me.DataController, expression, isTop, x, Me.IsDistinct, timePrecision)
+            'End If
             Return GetSumTopBotton(Me.DataController, expression, Me.AggregateType, isTop, x, isPercent, Me.IsDistinct, timePrecision)
         End If
 
@@ -341,12 +354,51 @@ Public Class SummaryExpressionFunction
                     o = data.Average(Function(s)
                                          Return agregateFunc(s)
                                      End Function)
+                    'Case AggregateTypeEnum.Count
+                    '    o = data.Count(Function(s)
+                    '                       Return agregateFunc(s)
+                    '                   End Function)
+
             End Select
             Return GetFixedTotal(o, isTimeSpan, timePrecision)
 
 
         End If
     End Function
+
+    'Public Shared Function GetCountTopBotton(
+    '                dataController As BaseListSourceDataController,
+    '                expression As String,
+    '                isTop As Boolean,
+    '                x As Decimal,
+    '                isDistinct As Boolean,
+    '                Optional timePrecision As TimeSpanPrecision = TimeSpanPrecision.Seconds) As Object
+    '    Dim data As IEnumerable(Of Object) = GetAggregateData(dataController, expression, isTop, 100, True, False, isDistinct, timePrecision)
+    '    Dim isTimeSpan As Boolean = TypeOf data.FirstOrDefault Is TimeSpan
+    '    Dim agregateFunc As Func(Of Object, Double) = GetAgregateFunc(isTimeSpan, timePrecision)
+    '    Dim sum As Object = GetFixedTotal(data.Sum(Function(s) agregateFunc(s)), isTimeSpan, timePrecision)
+    '    If isTimeSpan Then
+    '        Dim sumTime As Double = 0
+
+    '        Select Case timePrecision
+    '            Case TimeSpanPrecision.Days
+    '                sumTime = DirectCast(sum, TimeSpan).TotalDays
+    '            Case TimeSpanPrecision.Hours
+    '                sumTime = DirectCast(sum, TimeSpan).TotalHours
+    '            Case TimeSpanPrecision.Minutes
+    '                sumTime = DirectCast(sum, TimeSpan).TotalMinutes
+    '            Case Else
+    '                sumTime = DirectCast(sum, TimeSpan).TotalSeconds
+    '        End Select
+    '        sumTime = sumTime * x / 100
+    '        data = data.Where(Function(q) DirectCast(q, Double) <= sumTime)
+    '    Else
+    '        Dim sumDecimal As Decimal = Convert.ToDecimal(sum) * x / 100
+    '        data = data.Where(Function(q) DirectCast(q, Decimal) <= sumDecimal)
+    '    End If
+
+    '    Return data.Count
+    'End Function
 
     Public Shared Function GetTimePrecision(o As Object) As TimeSpanPrecision
         Dim timePrecision As TimeSpanPrecision = TimeSpanPrecision.Seconds
@@ -369,6 +421,8 @@ Public Class SummaryExpressionFunction
 
     Public Shared Function GetExpressionFunctions(dataController As BaseListSourceDataController) As List(Of ICustomFunctionOperator)
         Dim l As New List(Of ICustomFunctionOperator)
+        'l.Add(New SummaryExpressionFunction(dataController, AggregateTypeEnum.Count, True))
+        'l.Add(New SummaryExpressionFunction(dataController, AggregateTypeEnum.Count, False))
         l.Add(New SummaryExpressionFunction(dataController, AggregateTypeEnum.Sum, True))
         l.Add(New SummaryExpressionFunction(dataController, AggregateTypeEnum.Sum, False))
         l.Add(New SummaryExpressionFunction(dataController, AggregateTypeEnum.Avg, True))

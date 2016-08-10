@@ -193,6 +193,7 @@ Namespace AcurSoft.XtraGrid.Views.Grid
             msiBottom.Items.Add(CreateSummaryColumnMenuItem(SummaryItemTypeEx2.BottomXPercentAvg, col, orgSummaryItem,, add))
             msiSummariesItems.Add(msiBottom)
             msiSummariesItems.Add(CreateSummaryColumnMenuItem(SummaryItemTypeEx2.Expression, col, orgSummaryItem, True, add))
+            msiSummariesItems.Item(msiSummariesItems.Add(CreateSummaryColumnMenuItem(SummaryItemTypeEx2.Sparkline, col, orgSummaryItem, True, add))).Caption = "Sparkline"
         End Sub
 
         Private Function GetSummaryEditDialogMenuItem(e As PopupMenuShowingEventArgs) As DXMenuItem
@@ -256,15 +257,25 @@ Namespace AcurSoft.XtraGrid.Views.Grid
                             col.Summary.BeginUpdate()
                             Dim newSi As GridColumnSummaryItemEx = Nothing
                             If add Then
+                                'If st = SummaryItemTypeEx2.Sparkline Then
+                                '    newSi = GridColumnSummaryItemExSparkline.CreateInstance(col, col.FieldName, False, True)
+                                'Else
+                                'End If
                                 newSi = GridColumnSummaryItemEx.CreateInstance(col, st, col.FieldName, Nothing, Nothing, False, True)
                             Else
                                 If orgSummaryItem Is Nothing Then
+                                    'If st = SummaryItemTypeEx2.Sparkline Then
+                                    '    newSi = GridColumnSummaryItemExSparkline.CreateInstance(col, col.FieldName, True, True)
+                                    'Else
+                                    'End If
                                     newSi = GridColumnSummaryItemEx.CreateInstance(col, st, col.FieldName, Nothing, Nothing, True, True)
                                 Else
                                     If st = SummaryItemTypeEx2.None AndAlso orgSummaryItem IsNot Nothing AndAlso orgSummaryItem.Collection.Count > 1 Then
                                         orgSummaryItem.Collection.Remove(orgSummaryItem)
                                     Else
-                                        Dim gsi As New GridColumnSummaryItemEx(gv, st, col.FieldName, Nothing, Nothing)
+                                        Dim gsi As GridColumnSummaryItemEx = Nothing
+                                        gsi = New GridColumnSummaryItemEx(gv, st, col.FieldName, Nothing, Nothing)
+
                                         If gsi.SummaryType <> SummaryItemType.None Then
                                             gv.OptionsView.ShowFooter = True
                                         End If
@@ -286,6 +297,28 @@ Namespace AcurSoft.XtraGrid.Views.Grid
                     End Sub
             Return mi
         End Function
+
+        Protected Overrides Sub RaiseCustomDrawFooterCell(e As FooterCellCustomDrawEventArgs)
+            MyBase.RaiseCustomDrawFooterCell(e)
+            If e.Column IsNot Nothing AndAlso e.Info.SummaryItem IsNot Nothing AndAlso TypeOf e.Info.SummaryItem Is GridColumnSummaryItemEx Then
+                Dim si As GridColumnSummaryItemEx = DirectCast(e.Info.SummaryItem, GridColumnSummaryItemEx)
+                If si.SummaryTypeEx = Extenders.SummaryItemTypeEx2.Sparkline Then
+                    Dim infos As GridColumnSummaryItemExSparklineInfos = DirectCast(si.Info, GridColumnSummaryItemExSparklineInfos)
+                    e.Painter.DrawObject(e.Info)
+                    'DevExpress.Utils.Paint.XPaint.ForceGDIPlusPaint()
+                    Dim rec As Rectangle = e.Info.Bounds
+                    Dim bmp As New Bitmap(rec.Width, rec.Height)
+                    Dim sparklineEdit As SparklineEdit = infos.GetSparkline
+                    sparklineEdit.Size = bmp.Size
+                    sparklineEdit.EditValue = infos.GetSparklineData()
+                    sparklineEdit.Invalidate()
+                    sparklineEdit.DrawToBitmap(bmp, New Rectangle(0, 0, rec.Width, rec.Height))
+                    e.Graphics.DrawImage(bmp, rec)
+                    e.Handled = True
+                End If
+            End If
+
+        End Sub
 #End Region
 
         Protected Overridable Sub RecalculateColumnWidths()

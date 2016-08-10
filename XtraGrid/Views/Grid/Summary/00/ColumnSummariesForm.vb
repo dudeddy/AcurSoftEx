@@ -238,7 +238,7 @@ Namespace AcurSoft.XtraGrid.Views.Grid.Extenders
                     Dim st As SummaryItemTypeEx2 = DirectCast(e.Value, SummaryItemTypeEx2)
                     Dim field As String = DirectCast(sender, GridView).GetRowCellValue(e.RowHandle, "Col").ToString
                     Dim col As GridColumn = Me.View.Columns(field)
-                    Dim info As Object = GridColumnSummaryItemEx.FixSummaryInfo(st)
+                    Dim info As Object = GridColumnSummaryItemEx.FixSummaryInfoEx(st)
                     Dim gv As GridView = DirectCast(sender, GridView)
                     gv.SetRowCellValue(e.RowHandle, "Info", info)
                     Dim displayFormat As String = CustomSummaryHelper.GetSummaryTypeDisplayFormat(st, col, info)

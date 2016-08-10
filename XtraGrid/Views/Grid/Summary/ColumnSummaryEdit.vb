@@ -65,6 +65,10 @@ Namespace AcurSoft.XtraGrid.Views.Grid.Extenders
                 Dim caption As String = CustomSummaryHelper.GetSummaryTypeCaption(si.SummaryTypeEx, col).Replace("50", "X").Replace("5", "X")
                 Me.lciTop.Text = caption & " :"
                 Me.lciTop.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Always
+            ElseIf si.SummaryTypeEx = SummaryItemTypeEx2.Sparkline
+                Me.SparklineInfosEditor1.Infos = DirectCast(_GridColumnSummaryItemEx.Info, GridColumnSummaryItemExSparklineInfos)
+                Me.lcgDisplayFormat.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Never
+                Me.lciSparkline.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Always
             End If
 
             Me.edDisplayFormat.EditValue = col.SummaryItem.DisplayFormat
@@ -82,16 +86,28 @@ Namespace AcurSoft.XtraGrid.Views.Grid.Extenders
                         Me.edExpression.Text = "Sum(" & c.FieldName & ")"
                         Me.lciTop.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Never
                         Me.lcgExpression.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Always
+                        Me.lciSparkline.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Never
+                        Me.lcgDisplayFormat.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Always
                     ElseIf SummaryItemTypeHelperEx.IsTopButtom(st) Then
                         Me.edTop.Value = Convert.ToDecimal(Me.edTop.EditValue)
                         Dim caption As String = CustomSummaryHelper.GetSummaryTypeCaption(st, c).Replace("50", "X").Replace("5", "X")
                         Me.lciTop.Text = caption & " :"
                         Me.lciTop.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Always
                         Me.lcgExpression.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Never
-
+                        Me.lciSparkline.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Never
+                        Me.lcgDisplayFormat.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Always
+                    ElseIf st = SummaryItemTypeEx2.Sparkline
+                        Me.SparklineInfosEditor1.Infos = DirectCast(_GridColumnSummaryItemEx.Info, GridColumnSummaryItemExSparklineInfos)
+                        Me.lciTop.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Never
+                        Me.lcgExpression.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Never
+                        Me.lciSparkline.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Always
+                        Me.lcgDisplayFormat.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Never
                     Else
                         Me.lciTop.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Never
                         Me.lcgExpression.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Never
+                        Me.lciSparkline.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Never
+                        Me.lcgDisplayFormat.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Always
+
                     End If
                     'Me.GetHelp()
                 End Sub
@@ -156,8 +172,11 @@ Namespace AcurSoft.XtraGrid.Views.Grid.Extenders
             Else
                 If st = SummaryItemTypeEx2.Expression Then
                     _GridColumnSummaryItemEx.ReAssign(field, st, Me.edDisplayFormat.Text, Me.edExpression.EditValue)
+                ElseIf st = SummaryItemTypeEx2.Sparkline
+                    Dim info As GridColumnSummaryItemExSparklineInfos = Me.SparklineInfosEditor1.Infos
+                    'Me.SparklineInfosEditor1.edSparkline.EditValue
+                    _GridColumnSummaryItemEx.ReAssign(field, st, "", Me.SparklineInfosEditor1.Infos)
                 Else
-
                     _GridColumnSummaryItemEx.ReAssign(field, st, Me.edDisplayFormat.Text, Me.edTop.EditValue)
                 End If
                 If st <> SummaryItemTypeEx2.None Then
@@ -166,7 +185,7 @@ Namespace AcurSoft.XtraGrid.Views.Grid.Extenders
             End If
             _Column.Summary.EndUpdate()
             _View.EndDataUpdate()
-
+            '_View.InvalidateFooter()
         End Sub
 
         Private Sub btnOk_Click(sender As Object, e As EventArgs) Handles btnOk.Click

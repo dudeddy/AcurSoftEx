@@ -32,6 +32,7 @@ Namespace AcurSoft.XtraGrid.Views.Grid.Extenders
                     _SummaryTypeDic.Add(SummaryItemTypeEx2.BottomXAvg, "Bottom X Avg")
                     _SummaryTypeDic.Add(SummaryItemTypeEx2.BottomXPercentAvg, "Bottom X Percent Avg")
                     _SummaryTypeDic.Add(SummaryItemTypeEx2.Expression, "Expression")
+                    _SummaryTypeDic.Add(SummaryItemTypeEx2.Sparkline, "Sparkline")
 
                 End If
                 Return _SummaryTypeDic
@@ -225,7 +226,7 @@ Namespace AcurSoft.XtraGrid.Views.Grid.Extenders
         Public Shared Function GetSummaryTypeCaption(st As SummaryItemTypeEx2, col As GridColumn, Optional info As Object = Nothing) As String
             If st = SummaryItemTypeEx2.None Then Return "None"
             Dim caption As String = Nothing
-            info = GridColumnSummaryItemEx.FixSummaryInfo(st, info)
+            info = GridColumnSummaryItemEx.FixSummaryInfoEx(st, info)
             Select Case st
                 Case SummaryItemTypeEx2.Expression
                     caption = "Expression"

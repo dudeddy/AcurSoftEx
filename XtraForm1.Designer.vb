@@ -30,6 +30,7 @@ Partial Class XtraForm1
         Me.GridViewEx1 = New AcurSoft.XtraGrid.Views.Grid.GridViewEx()
         Me.XtraTabControl1 = New DevExpress.XtraTab.XtraTabControl()
         Me.XtraTabPage1 = New DevExpress.XtraTab.XtraTabPage()
+        Me.SparklineEdit1 = New DevExpress.XtraEditors.SparklineEdit()
         Me.SimpleButton6 = New DevExpress.XtraEditors.SimpleButton()
         Me.SimpleButton5 = New DevExpress.XtraEditors.SimpleButton()
         Me.SimpleButton4 = New DevExpress.XtraEditors.SimpleButton()
@@ -37,7 +38,6 @@ Partial Class XtraForm1
         Me.SimpleButton2 = New DevExpress.XtraEditors.SimpleButton()
         Me.SimpleButton1 = New DevExpress.XtraEditors.SimpleButton()
         Me.XtraTabPage2 = New DevExpress.XtraTab.XtraTabPage()
-        Me.SparklineEdit1 = New DevExpress.XtraEditors.SparklineEdit()
         CType(Me.RangeControl1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.MonthEdit1.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridControlEx1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -109,6 +109,17 @@ Partial Class XtraForm1
         Me.XtraTabPage1.Size = New System.Drawing.Size(889, 91)
         Me.XtraTabPage1.Text = "XtraTabPage1"
         '
+        'SparklineEdit1
+        '
+        Me.SparklineEdit1.EditValue = New Double() {0R, 3.0R, 9.0R, 2.0R, 1.0R, 10.0R}
+        Me.SparklineEdit1.Location = New System.Drawing.Point(201, 19)
+        Me.SparklineEdit1.Name = "SparklineEdit1"
+        Me.SparklineEdit1.Properties.PointSortOrder = DevExpress.Data.ColumnSortOrder.Descending
+        LineSparklineView1.Color = System.Drawing.Color.Red
+        Me.SparklineEdit1.Properties.View = LineSparklineView1
+        Me.SparklineEdit1.Size = New System.Drawing.Size(191, 33)
+        Me.SparklineEdit1.TabIndex = 9
+        '
         'SimpleButton6
         '
         Me.SimpleButton6.Location = New System.Drawing.Point(700, 48)
@@ -162,14 +173,6 @@ Partial Class XtraForm1
         Me.XtraTabPage2.Name = "XtraTabPage2"
         Me.XtraTabPage2.Size = New System.Drawing.Size(889, 91)
         Me.XtraTabPage2.Text = "XtraTabPage2"
-        '
-        'SparklineEdit1
-        '
-        Me.SparklineEdit1.Location = New System.Drawing.Point(201, 19)
-        Me.SparklineEdit1.Name = "SparklineEdit1"
-        Me.SparklineEdit1.Properties.View = LineSparklineView1
-        Me.SparklineEdit1.Size = New System.Drawing.Size(191, 33)
-        Me.SparklineEdit1.TabIndex = 9
         '
         'XtraForm1
         '

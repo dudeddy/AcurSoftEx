@@ -1,8 +1,10 @@
 ﻿Imports System.IO
 Imports System.Reflection
+Imports AcurSoft.XtraGrid
 Imports AcurSoft.XtraGrid.Columns.Helpers
 Imports AcurSoft.XtraGrid.Views.Grid
 Imports DevExpress.Data.Filtering
+Imports DevExpress.Sparkline
 Imports DevExpress.Utils.Menu
 Imports DevExpress.XtraEditors
 Imports DevExpress.XtraEditors.Controls
@@ -10,6 +12,7 @@ Imports DevExpress.XtraEditors.Drawing
 Imports DevExpress.XtraEditors.Popup
 Imports DevExpress.XtraEditors.ViewInfo
 Imports DevExpress.XtraGrid.Columns
+Imports DevExpress.XtraGrid.Drawing
 Imports DevExpress.XtraGrid.Menu
 
 Public Class XtraForm1
@@ -195,8 +198,20 @@ Public Class XtraForm1
 
     Private filterRow As Boolean
     Private Sub SimpleButton5_Click(sender As Object, e As EventArgs) Handles SimpleButton5.Click
-        filterRow = Not filterRow
-        'Me.GridViewEx1.OptionsBehavior.BookmarksHelper. = filterRow
+        'filterRow = Not filterRow
+        ''Me.GridViewEx1.OptionsBehavior.BookmarksHelper. = filterRow
+        'Dim x As DevExpress.XtraEditors.ViewInfo.SparklineEditViewInfo = Me.SparklineEdit1.Properties.CreateViewInfo
+        ''DirectCast(x, DevExpress.XtraEditors.ViewInfo.SparklineEditViewInfo).ValuesCore
+        'Dim zz = 5
+        'DevExpress.Utils.Paint.XPaint.ForceGDIPlusPaint()
+
+        'Dim bmp As New Bitmap(160, 30)
+        ''Dim s = sline(args.Bounds)
+        'Dim s = Me.SparklineEdit1
+        ''Me.GridControlEx1.Controls.Add(s)
+        's.DrawToBitmap(bmp, New Rectangle(0, 0, 160, 30))
+        'bmp.Save("2.bmp")
+
     End Sub
 
     Private Sub SimpleButton6_Click(sender As Object, e As EventArgs) Handles SimpleButton6.Click
@@ -221,6 +236,40 @@ Public Class XtraForm1
         'Dim tt = Me.GridViewEx1.DataController
         Dim zzzz = 0
     End Sub
+
+    Public Function sline(rec As Rectangle) As SparklineEdit
+
+        Dim sparkline As New SparklineEdit()
+        sparkline.Size = New Size(rec.Width, rec.Height)
+        'sparkline.Dock = DockStyle.Fill
+
+        sparkline.EditValue = New Double() {2, 4, 5, 1, -1, -2, -1, 2, 4, 5, 6, 3, 5, 4, 8, -1, 6}
+
+        ' Create an Area view and assign it to the sparkline.
+        Dim view As New AreaSparklineView()
+        sparkline.Properties.View = view
+
+        ' Customize area appearance.
+        view.Color = Color.Aqua
+        view.AreaOpacity = 50
+
+        ' Show markerks.
+        view.HighlightStartPoint = True
+        view.HighlightEndPoint = True
+        view.HighlightMaxPoint = True
+        view.HighlightMinPoint = True
+        view.HighlightNegativePoints = True
+        view.SetSizeForAllMarkers(10)
+        'sparkline.Properties.CreatePainter()
+        DevExpress.Utils.Paint.XPaint.ForceGDIPlusPaint()
+        sparkline.CreateGraphics()
+        sparkline.SuspendLayout()
+        sparkline.ResumeLayout()
+        sparkline.Update()
+        Return sparkline
+
+    End Function
+
     'Private Sub DateRangeFunctionsControl1_OnRangeCriteriaChanged(e As AcurSoft.Data.Filtering.DateRangeCriteria)
     '    Dim x = e
     'End Sub

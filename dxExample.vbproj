@@ -261,6 +261,13 @@
     <Compile Include="XtraGrid\Views\Grid\Summary\CustomSummaryHelper.vb" />
     <Compile Include="XtraGrid\Views\Grid\Summary\GridColumnSummaryItemCollectionEx.vb" />
     <Compile Include="XtraGrid\Views\Grid\Summary\GridColumnSummaryItemEx.vb" />
+    <Compile Include="XtraGrid\Views\Grid\Summary\GridColumnSummaryItemExSparklineInfos.vb" />
+    <Compile Include="XtraGrid\Views\Grid\Summary\SparklineInfosEditor.Designer.vb">
+      <DependentUpon>SparklineInfosEditor.vb</DependentUpon>
+    </Compile>
+    <Compile Include="XtraGrid\Views\Grid\Summary\SparklineInfosEditor.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="XtraGrid\Views\Grid\Summary\SummaryItemTypeEx2.vb" />
     <Compile Include="XtraGrid\Views\Grid\ViewInfo\GridViewExInfo.vb" />
     <Compile Include="XtraGrid\Registrator\GridViewExInfoRegistrator.vb" />
@@ -343,6 +350,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="XtraGrid\Views\Grid\Summary\ColumnSummaryEdit.resx">
       <DependentUpon>ColumnSummaryEdit.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="XtraGrid\Views\Grid\Summary\SparklineInfosEditor.resx">
+      <DependentUpon>SparklineInfosEditor.vb</DependentUpon>
     </EmbeddedResource>
     <None Include="app.config" />
     <None Include="My Project\Settings.settings">
