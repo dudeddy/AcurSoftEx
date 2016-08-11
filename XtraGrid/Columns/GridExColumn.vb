@@ -4,6 +4,7 @@ Imports AcurSoft.XtraGrid.Columns
 Imports AcurSoft.XtraGrid.Columns.Helpers
 Imports AcurSoft.XtraGrid.Views.Grid
 Imports AcurSoft.XtraGrid.Views.Grid.Extenders
+Imports AcurSoft.XtraGrid.Views.Grid.Summary
 Imports DevExpress.Utils.Drawing
 Imports DevExpress.Utils.Serializing
 Imports DevExpress.XtraEditors

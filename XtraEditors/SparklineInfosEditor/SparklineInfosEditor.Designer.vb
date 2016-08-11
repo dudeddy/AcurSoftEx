@@ -1,4 +1,4 @@
-﻿Namespace AcurSoft.XtraGrid
+﻿Namespace AcurSoft.XtraEditors.Controls
 
     <Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
     Partial Class SparklineInfosEditor

@@ -6,6 +6,7 @@ Imports DevExpress.XtraGrid
 Imports DevExpress.XtraGrid.Columns
 Imports DevExpress.XtraGrid.Views.Grid
 Imports System.ComponentModel
+Imports AcurSoft.XtraGrid.Views.Grid.Summary
 
 Namespace AcurSoft.XtraGrid
 

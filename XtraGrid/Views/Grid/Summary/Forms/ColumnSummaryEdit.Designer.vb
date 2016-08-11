@@ -1,4 +1,6 @@
-﻿Namespace AcurSoft.XtraGrid.Views.Grid.Extenders
+﻿Imports AcurSoft.XtraEditors.Controls
+
+Namespace AcurSoft.XtraGrid.Views.Grid.Summary.Forms
 
     <Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
     Partial Class ColumnSummaryConfig
@@ -46,7 +48,7 @@
             Me.LayoutControlItem6 = New DevExpress.XtraLayout.LayoutControlItem()
             Me.LayoutControlItem7 = New DevExpress.XtraLayout.LayoutControlItem()
             Me.lcgDisplayFormat = New DevExpress.XtraLayout.LayoutControlGroup()
-            Me.SparklineInfosEditor1 = New AcurSoft.XtraGrid.SparklineInfosEditor()
+            Me.SparklineInfosEditor1 = New AcurSoft.XtraEditors.Controls.SparklineInfosEditor()
             Me.lciSparkline = New DevExpress.XtraLayout.LayoutControlItem()
             CType(Me.LayoutControl1, System.ComponentModel.ISupportInitialize).BeginInit()
             Me.LayoutControl1.SuspendLayout()

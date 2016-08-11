@@ -1,4 +1,6 @@
 ﻿Imports AcurSoft.Data
+Imports AcurSoft.XtraGrid.Views.Grid.Extenders
+Imports AcurSoft.XtraGrid.Views.Grid.Summary
 Imports DevExpress.Data
 Imports DevExpress.Data.Summary
 Imports DevExpress.Utils
@@ -7,7 +9,7 @@ Imports DevExpress.XtraGrid
 Imports DevExpress.XtraGrid.Columns
 Imports DevExpress.XtraGrid.Views.Grid
 
-Namespace AcurSoft.XtraGrid.Views.Grid.Extenders
+Namespace AcurSoft.XtraGrid.Views.Grid.Summary.Forms
 
 
     Public Class ColumnSummaryConfig

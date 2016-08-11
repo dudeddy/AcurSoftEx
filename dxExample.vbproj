@@ -103,9 +103,8 @@
     <Import Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="00Draft\SummaryExpressionFunction.vb" />
-    <Compile Include="00Draft\SummaryExpressionCriteriaVisitor.vb" />
-    <Compile Include="00Draft\SumTop.vb" />
+    <Compile Include="Base\Data\Filtering\Summary\SummaryExpressionFunction.vb" />
+    <Compile Include="Base\Data\Filtering\Summary\SummaryExpressionCriteriaVisitor.vb" />
     <Compile Include="00ToChange\CriteriaNodeHelper.vb" />
     <Compile Include="00ToChange\Draft\CriteriaExPatcher.vb" />
     <Compile Include="00ToChange\FilterControlLabelInfoEx.vb" />
@@ -246,29 +245,30 @@
     <Compile Include="XtraGrid\Views\Grid\Sort\GridSortForm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="XtraGrid\Views\Grid\Summary\00\ColumnSummariesForm.Designer.vb">
+    <Compile Include="XtraGrid\Views\Grid\Summary\Forms\ColumnSummariesForm.Designer.vb">
       <DependentUpon>ColumnSummariesForm.vb</DependentUpon>
     </Compile>
-    <Compile Include="XtraGrid\Views\Grid\Summary\00\ColumnSummariesForm.vb">
+    <Compile Include="XtraGrid\Views\Grid\Summary\Forms\ColumnSummariesForm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="XtraGrid\Views\Grid\Summary\ColumnSummaryEdit.Designer.vb">
+    <Compile Include="XtraGrid\Views\Grid\Summary\Forms\ColumnSummaryEdit.Designer.vb">
       <DependentUpon>ColumnSummaryEdit.vb</DependentUpon>
     </Compile>
-    <Compile Include="XtraGrid\Views\Grid\Summary\ColumnSummaryEdit.vb">
+    <Compile Include="XtraGrid\Views\Grid\Summary\Forms\ColumnSummaryEdit.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="XtraGrid\Views\Grid\Summary\CustomSummaryHelper.vb" />
     <Compile Include="XtraGrid\Views\Grid\Summary\GridColumnSummaryItemCollectionEx.vb" />
     <Compile Include="XtraGrid\Views\Grid\Summary\GridColumnSummaryItemEx.vb" />
     <Compile Include="XtraGrid\Views\Grid\Summary\GridColumnSummaryItemExSparklineInfos.vb" />
-    <Compile Include="XtraGrid\Views\Grid\Summary\SparklineInfosEditor.Designer.vb">
+    <Compile Include="XtraEditors\SparklineInfosEditor\SparklineInfosEditor.Designer.vb">
       <DependentUpon>SparklineInfosEditor.vb</DependentUpon>
     </Compile>
-    <Compile Include="XtraGrid\Views\Grid\Summary\SparklineInfosEditor.vb">
+    <Compile Include="XtraEditors\SparklineInfosEditor\SparklineInfosEditor.vb">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="XtraGrid\Views\Grid\Summary\SummaryItemTypeEx2.vb" />
+    <Compile Include="XtraGrid\Views\Grid\Summary\SummaryItemTypeHelperEx.vb" />
     <Compile Include="XtraGrid\Views\Grid\ViewInfo\GridViewExInfo.vb" />
     <Compile Include="XtraGrid\Registrator\GridViewExInfoRegistrator.vb" />
     <Compile Include="XtraGrid\Views\Grid\GridOptionsViewEx.vb" />
@@ -345,13 +345,13 @@
     <EmbeddedResource Include="XtraGrid\Views\Grid\Sort\GridSortForm.resx">
       <DependentUpon>GridSortForm.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="XtraGrid\Views\Grid\Summary\00\ColumnSummariesForm.resx">
+    <EmbeddedResource Include="XtraGrid\Views\Grid\Summary\Forms\ColumnSummariesForm.resx">
       <DependentUpon>ColumnSummariesForm.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="XtraGrid\Views\Grid\Summary\ColumnSummaryEdit.resx">
+    <EmbeddedResource Include="XtraGrid\Views\Grid\Summary\Forms\ColumnSummaryEdit.resx">
       <DependentUpon>ColumnSummaryEdit.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="XtraGrid\Views\Grid\Summary\SparklineInfosEditor.resx">
+    <EmbeddedResource Include="XtraEditors\SparklineInfosEditor\SparklineInfosEditor.resx">
       <DependentUpon>SparklineInfosEditor.vb</DependentUpon>
     </EmbeddedResource>
     <None Include="app.config" />
@@ -392,7 +392,9 @@
     <EmbeddedResource Include="Images\filter_visual_16x16.png" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="00Draft\" />
     <Folder Include="DateForm\BackUp\Good\" />
+    <Folder Include="XtraEditors\Controls\" />
     <Folder Include="XtraEditors\FilterControlEx\Alpha\" />
     <Folder Include="XtraFilterEditor\Alfa\" />
   </ItemGroup>

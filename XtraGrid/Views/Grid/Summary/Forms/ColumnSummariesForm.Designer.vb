@@ -1,4 +1,4 @@
-﻿Namespace AcurSoft.XtraGrid.Views.Grid.Extenders
+﻿Namespace AcurSoft.XtraGrid.Views.Grid.Summary.Forms
 
 
     <Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>

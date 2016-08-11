@@ -16,7 +16,7 @@ Module Extensions
     End Function
 
     <Extension>
-    Public Function IsStandard(ByVal summaryItemType As AcurSoft.XtraGrid.Views.Grid.Extenders.SummaryItemTypeEx2) As Boolean
+    Public Function IsStandard(ByVal summaryItemType As AcurSoft.XtraGrid.Views.Grid.Summary.SummaryItemTypeEx2) As Boolean
         Return System.Enum.IsDefined(GetType(SummaryItemType), summaryItemType.value__)
     End Function
 

@@ -1,12 +1,17 @@
 ﻿Imports AcurSoft.Data
+Imports AcurSoft.Data.Filtering
+Imports AcurSoft.Data.Filtering.Summary
+Imports AcurSoft.XtraGrid.Views.Grid.Extenders
 Imports DevExpress.Data
 Imports DevExpress.Data.Filtering
+Imports DevExpress.Data.Filtering.Summary
+Imports DevExpress.Data.Summary
 Imports DevExpress.XtraGrid
 Imports DevExpress.XtraGrid.Columns
 Imports DevExpress.XtraGrid.Views.Grid
 'Imports DevExpress.Data.Summary
 
-Namespace AcurSoft.XtraGrid.Views.Grid.Extenders
+Namespace AcurSoft.XtraGrid.Views.Grid.Summary
 
     Public Class CustomSummaryHelper
 #Region "Commun Data"
@@ -41,8 +46,8 @@ Namespace AcurSoft.XtraGrid.Views.Grid.Extenders
 
         Public Shared Function GetSummaryTypeDic(col As GridColumn) As Dictionary(Of SummaryItemTypeEx2, String)
             Dim colType As Type = col.ColumnType
-            Dim canSum As Boolean = colType Is GetType(TimeSpan) OrElse Summary.SummaryItemTypeHelper.CanApplySummary(SummaryItemType.Sum, colType)
-            Dim canAvg As Boolean = colType Is GetType(TimeSpan) OrElse Summary.SummaryItemTypeHelper.CanApplySummary(SummaryItemType.Average, colType)
+            Dim canSum As Boolean = colType Is GetType(TimeSpan) OrElse SummaryItemTypeHelper.CanApplySummary(SummaryItemType.Sum, colType)
+            Dim canAvg As Boolean = colType Is GetType(TimeSpan) OrElse SummaryItemTypeHelper.CanApplySummary(SummaryItemType.Average, colType)
             If Not canAvg OrElse Not canSum Then
                 Dim dic As Dictionary(Of SummaryItemTypeEx2, String) = CustomSummaryHelper.SummaryTypeDic.Where(
                             Function(q)
@@ -201,11 +206,11 @@ Namespace AcurSoft.XtraGrid.Views.Grid.Extenders
 
 #Region "Can Apply Summary"
         Public Shared Function CanApplySumSummary(col As GridColumn) As Boolean
-            Return col.ColumnType Is GetType(TimeSpan) OrElse Summary.SummaryItemTypeHelper.CanApplySummary(SummaryItemType.Sum, col.ColumnType)
+            Return col.ColumnType Is GetType(TimeSpan) OrElse SummaryItemTypeHelper.CanApplySummary(SummaryItemType.Sum, col.ColumnType)
         End Function
 
         Public Shared Function CanApplyAvgSummary(col As GridColumn) As Boolean
-            Return col.ColumnType Is GetType(TimeSpan) OrElse Summary.SummaryItemTypeHelper.CanApplySummary(SummaryItemType.Average, col.ColumnType)
+            Return col.ColumnType Is GetType(TimeSpan) OrElse SummaryItemTypeHelper.CanApplySummary(SummaryItemType.Average, col.ColumnType)
         End Function
 
         Public Shared Function CanApplySummary(st As SummaryItemTypeEx2, col As GridColumn) As Boolean
@@ -215,7 +220,7 @@ Namespace AcurSoft.XtraGrid.Views.Grid.Extenders
                     Return True
                 Case Else
                     If SummaryItemTypeHelperEx.IsSumOrAvg(st) Then
-                        Return col.ColumnType Is GetType(TimeSpan) OrElse Summary.SummaryItemTypeHelper.CanApplySummary(SummaryItemType.Sum, col.ColumnType)
+                        Return col.ColumnType Is GetType(TimeSpan) OrElse SummaryItemTypeHelper.CanApplySummary(SummaryItemType.Sum, col.ColumnType)
                     End If
             End Select
             Return True

@@ -26,6 +26,8 @@ Imports DevExpress.XtraGrid.Views.Grid
 Imports DevExpress.XtraGrid.Views.Grid.ViewInfo
 Imports System.ComponentModel
 Imports AcurSoft.Data
+Imports AcurSoft.XtraGrid.Views.Grid.Summary.Forms
+Imports AcurSoft.XtraGrid.Views.Grid.Summary
 'How to add custom filter items into the DateTime filter popup window
 'http://www.devexpress.com/example=E4265
 'GridView - How to add a custom button to the FilterPanel
@@ -167,9 +169,9 @@ Namespace AcurSoft.XtraGrid.Views.Grid
 
         Protected Overrides Sub OnDataManager_CustomSummaryEvent(sender As Object, e As CustomSummaryEventArgs)
             MyBase.OnDataManager_CustomSummaryEvent(sender, e)
-            Extenders.CustomSummaryHelper.GetUniqueValuesCount(Me, e)
-            Extenders.CustomSummaryHelper.GetTopBottomSummary(Me, e)
-            Extenders.CustomSummaryHelper.GetExpressionSummary(Me, e)
+            CustomSummaryHelper.GetUniqueValuesCount(Me, e)
+            CustomSummaryHelper.GetTopBottomSummary(Me, e)
+            CustomSummaryHelper.GetExpressionSummary(Me, e)
         End Sub
 
         Private Sub BuildSummariesMenuItems(col As GridColumn, orgSummaryItem As GridColumnSummaryItem, msiSummariesItems As DXMenuItemCollection, add As Boolean, Optional beginGroup As Boolean = False)
@@ -210,7 +212,7 @@ Namespace AcurSoft.XtraGrid.Views.Grid
                         End If
                     End If
                     If si IsNot Nothing Then
-                        Using frm As New Extenders.ColumnSummaryConfig(e.HitInfo.Column, DirectCast(si, GridColumnSummaryItemEx))
+                        Using frm As New ColumnSummaryConfig(e.HitInfo.Column, DirectCast(si, GridColumnSummaryItemEx))
                             If frm.ShowDialog = DialogResult.OK Then
                                 frm.SaveChanges()
                             End If
@@ -225,7 +227,7 @@ Namespace AcurSoft.XtraGrid.Views.Grid
             Dim miSummaryConfigDialog As New DXMenuItem With {.Caption = "Summaries Config"}
             AddHandler miSummaryConfigDialog.Click,
             Sub(s, a)
-                Using frm As New Extenders.ColumnSummariesForm(e.HitInfo.Column)
+                Using frm As New ColumnSummariesForm(e.HitInfo.Column)
                     If frm.ShowDialog = DialogResult.OK Then
                         frm.SaveChanges()
                     End If
@@ -286,7 +288,7 @@ Namespace AcurSoft.XtraGrid.Views.Grid
                             col.Summary.EndUpdate()
                             gv.EndDataUpdate()
                             If st = SummaryItemTypeEx2.Expression AndAlso newSi IsNot Nothing Then
-                                Using frm As New Extenders.ColumnSummaryConfig(col, DirectCast(newSi, GridColumnSummaryItemEx))
+                                Using frm As New ColumnSummaryConfig(col, DirectCast(newSi, GridColumnSummaryItemEx))
                                     If frm.ShowDialog = DialogResult.OK Then
                                         frm.SaveChanges()
                                     End If
@@ -302,7 +304,7 @@ Namespace AcurSoft.XtraGrid.Views.Grid
             MyBase.RaiseCustomDrawFooterCell(e)
             If e.Column IsNot Nothing AndAlso e.Info.SummaryItem IsNot Nothing AndAlso TypeOf e.Info.SummaryItem Is GridColumnSummaryItemEx Then
                 Dim si As GridColumnSummaryItemEx = DirectCast(e.Info.SummaryItem, GridColumnSummaryItemEx)
-                If si.SummaryTypeEx = Extenders.SummaryItemTypeEx2.Sparkline Then
+                If si.SummaryTypeEx = SummaryItemTypeEx2.Sparkline Then
                     Dim infos As GridColumnSummaryItemExSparklineInfos = DirectCast(si.Info, GridColumnSummaryItemExSparklineInfos)
                     e.Painter.DrawObject(e.Info)
                     'DevExpress.Utils.Paint.XPaint.ForceGDIPlusPaint()

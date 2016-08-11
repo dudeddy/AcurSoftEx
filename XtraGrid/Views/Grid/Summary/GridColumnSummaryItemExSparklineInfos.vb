@@ -11,8 +11,10 @@ Imports DevExpress.Sparkline
 Imports DevExpress.Data.Helpers
 Imports DevExpress.Data.Filtering.Helpers
 Imports DevExpress.Data.Filtering
+Imports AcurSoft.Data.Filtering
+Imports AcurSoft.Data.Filtering.Summary
 
-Namespace AcurSoft.XtraGrid
+Namespace AcurSoft.XtraGrid.Views.Grid.Summary
 
     <Serializable()>
     Public Class GridColumnSummaryItemExSparklineInfos

@@ -1,9 +1,11 @@
 ﻿Imports System.ComponentModel
-Imports AcurSoft.XtraGrid.GridColumnSummaryItemExSparklineInfos
+Imports AcurSoft.XtraGrid
+Imports AcurSoft.XtraGrid.Views.Grid.Summary
 Imports DevExpress.Data
 Imports DevExpress.Sparkline
 
-Namespace AcurSoft.XtraGrid
+Namespace AcurSoft.XtraEditors.Controls
+
 
     Public Class SparklineInfosEditor
         Public Sub New()

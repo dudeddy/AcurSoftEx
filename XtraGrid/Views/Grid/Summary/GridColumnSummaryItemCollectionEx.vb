@@ -1,7 +1,7 @@
 ﻿Imports DevExpress.XtraGrid
 Imports DevExpress.XtraGrid.Columns
 
-Namespace AcurSoft.XtraGrid
+Namespace AcurSoft.XtraGrid.Views.Grid.Summary
 
 
     Public Class GridColumnSummaryItemCollectionEx
